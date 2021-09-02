@@ -1,0 +1,30 @@
+main: com.pixlcore.main.Main
+name: PixlCore
+version: 1.0.0
+api-version: 1.17
+author: PixlBrosGamingYT
+description: Core plugin
+commands:
+   rename:
+      description: Rename item
+      usage: /rename <name>
+      permission: rename
+      permissionmessage: Nope.
+   discord:
+      description: Join our discord!
+      usage: /discord
+   spawn:
+      description: Teleport to spawn
+      usage: /spawn
+   shop:
+      description: Teleport to shop
+      usage: /shop
+   arena:
+      description: Join the arena!
+      usage: /arena accept/decline
+   back:
+      description: Teleport to last location
+      usage: /back
+   start:
+      description: Start your journey!
+      usage: /start
