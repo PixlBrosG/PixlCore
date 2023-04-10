@@ -8,7 +8,12 @@ commands:
    rename:
       description: Rename item
       usage: /rename <name>
-      permission: rename
+      permission: pixlcore.rename
+      permissionmessage: Nope.
+   invsee:
+      description: invsee
+      usage: /invsee <player>
+      permission: pixlcore.invsee
       permissionmessage: Nope.
    discord:
       description: Join our discord!
@@ -16,15 +21,22 @@ commands:
    spawn:
       description: Teleport to spawn
       usage: /spawn
-   shop:
-      description: Teleport to shop
-      usage: /shop
-   arena:
-      description: Join the arena!
-      usage: /arena accept/decline
+   setspawn:
+      description: Set new spawn
+      usage: /setspawn
+      permission: pixlcore.setspawn
+      permissionmessage: Nope.
+   warps:
+      description: List warps
+      usage: /warps
+   warp:
+      description: Teleport to a warp
+      usage: /warp <warp name>
+   setwarp:
+      description: Set new warp location
+      usage: /setwarp <warp name>
+      permission: pixlcore.setwarp
+      permissionmessage: Nope.
    back:
       description: Teleport to last location
       usage: /back
-   start:
-      description: Start your journey!
-      usage: /start
