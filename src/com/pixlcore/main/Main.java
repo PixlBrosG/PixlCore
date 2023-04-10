@@ -3,6 +3,7 @@ package com.pixlcore.main;
 import java.io.File;
 import java.io.IOException;
 import java.util.HashMap;
+import java.util.UUID;
 
 import org.bukkit.Location;
 import org.bukkit.World;
@@ -10,6 +11,7 @@ import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
+import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -40,7 +42,7 @@ public class Main extends JavaPlugin implements Listener
 		back.clear();
 	}
 	
-	private void setWarp(String warpName, Location newWarp)
+	private boolean setWarp(String warpName, Location newWarp)
 	{
 		File configFile = new File(getDataFolder(), "config.yml");
 		FileConfiguration config = getConfig();
@@ -55,10 +57,12 @@ public class Main extends JavaPlugin implements Listener
 		try
 		{
 			config.save(configFile);
+			return true;
 		}
 		catch (IOException e)
 		{
 			e.printStackTrace();
+			return false;
 		}
 	}
 	
@@ -74,12 +78,68 @@ public class Main extends JavaPlugin implements Listener
 			double y = warpCfg.getDouble("y");
 			double z = warpCfg.getDouble("z");
 			
-			double pitch = warpCfg.getDouble("pitch");
-			double yaw = warpCfg.getDouble("yaw");
+			float pitch = (float)warpCfg.getDouble("pitch");
+			float yaw   = (float)warpCfg.getDouble("yaw");
 			
 			Location warp = new Location(world, x, y, z);
-			warp.setPitch((float)pitch);
-			warp.setYaw((float)yaw);
+			warp.setPitch(pitch);
+			warp.setYaw(yaw);
+			
+			return warp;
+		}
+		catch (Exception e)
+		{
+			return null;
+		}
+	}
+	
+	private boolean setHome(UUID playerID, Location newWarp)
+	{
+		File configFile = new File(getDataFolder(), "playerdata.yml");
+		FileConfiguration config = YamlConfiguration.loadConfiguration(configFile);
+		
+		String idString = playerID.toString();
+		
+		config.set(idString + ".home.world", newWarp.getWorld().getName());
+		config.set(idString + ".home.x", newWarp.getX());
+		config.set(idString + ".home.y", newWarp.getY());
+		config.set(idString + ".home.z", newWarp.getZ());
+		config.set(idString + ".home.pitch", newWarp.getPitch());
+		config.set(idString + ".home.yaw", newWarp.getYaw());
+		
+		try
+		{
+			config.save(configFile);
+			return true;
+		}
+		catch (IOException e)
+		{
+			e.printStackTrace();
+			return false;
+		}
+	}
+	
+	private Location getHome(UUID playerID)
+	{
+		try
+		{
+			File configFile = new File(getDataFolder(), "playerdata.yml");
+			FileConfiguration config = YamlConfiguration.loadConfiguration(configFile);
+			
+			ConfigurationSection homeCfg = config.getConfigurationSection(playerID.toString() + ".home");
+			
+			World world = getServer().getWorld(homeCfg.getString("world"));
+			
+			double x = homeCfg.getDouble("x");
+			double y = homeCfg.getDouble("y");
+			double z = homeCfg.getDouble("z");
+			
+			float pitch = (float)homeCfg.getDouble("pitch");
+			float yaw   = (float)homeCfg.getDouble("yaw");
+			
+			Location warp = new Location(world, x, y, z);
+			warp.setPitch(pitch);
+			warp.setYaw(yaw);
 			
 			return warp;
 		}
@@ -98,7 +158,7 @@ public class Main extends JavaPlugin implements Listener
 		{
 			if (args.length == 0)
 			{
-				player.sendMessage(API.color("Please specify name"));
+				player.sendMessage(Utils.color("Please specify name"));
 				return true;
 			}
 			
@@ -106,21 +166,19 @@ public class Main extends JavaPlugin implements Listener
 			
 			if (heldItem.getType() == null || heldItem.getType().isAir())
 			{
-				player.sendMessage(API.color("No held item to rename!"));
+				player.sendMessage(Utils.color("No held item to rename!"));
 				return true;
 			}
 			
 			ItemMeta meta = heldItem.getItemMeta();
-			meta.setDisplayName(API.color(String.join(" ", args)));
+			meta.setDisplayName(Utils.color(String.join(" ", args)));
 			heldItem.setItemMeta(meta);
-			
-			return true;
 		}
 		else if (cmd.getName().equalsIgnoreCase("invsee"))
 		{
 			if (args.length == 0)
 			{
-				player.sendMessage(API.color("&cPlease specify a player"));
+				player.sendMessage(Utils.color("&cPlease specify a player"));
 				return true;
 			}
 			
@@ -128,20 +186,18 @@ public class Main extends JavaPlugin implements Listener
 			
 			if (src == null)
 			{
-				player.sendMessage(API.color("&cPlayer " + args[0] + " does not exist"));
+				player.sendMessage(Utils.color("&cPlayer " + args[0] + " does not exist"));
 				return true;
 			}
 			
-			player.sendMessage(API.color("&aOpening " + args[0] + "'s inventory"));
+			player.sendMessage(Utils.color("&aOpening " + args[0] + "'s inventory"));
 			player.openInventory(src.getInventory());
-			return true;
 		}
 		else if (cmd.getName().equalsIgnoreCase("discord"))
 		{
-			TextComponent msg = new TextComponent(API.color("&aJoin our discord!"));
+			TextComponent msg = new TextComponent(Utils.color("&aJoin our discord!"));
 			msg.setClickEvent(new ClickEvent(ClickEvent.Action.OPEN_URL, "https://discord.gg/" + getConfig().getString("discord")));
 			player.spigot().sendMessage(msg);
-			return true;
 		}
 		else if (cmd.getName().equalsIgnoreCase("spawn"))
 		{
@@ -149,27 +205,26 @@ public class Main extends JavaPlugin implements Listener
 			
 			if (spawn == null)
 			{
-				player.sendMessage(API.color("&cSpawn is not set"));
+				player.sendMessage(Utils.color("&cSpawn is not set"));
 			}
 			else
 			{
-				player.sendMessage(API.color("&aTeleporting spawn"));
+				player.sendMessage(Utils.color("&aTeleporting spawn"));
 				player.teleport(spawn);
 			}
-			
-			return true;
 		}
 		else if (cmd.getName().equalsIgnoreCase("setspawn"))
 		{
-			player.sendMessage(API.color("&aSet spawn to current location"));
-			setWarp("spawn", player.getLocation());
-			return true;
+			if (setWarp("spawn", player.getLocation()))
+				player.sendMessage(Utils.color("&aSet spawn to current location"));
+			else
+				player.sendMessage(Utils.color("&cFailed to set spawn!"));
 		}
 		else if (cmd.getName().equalsIgnoreCase("warp"))
 		{
 			if (args.length == 0)
 			{
-				player.sendMessage(API.color("&cPlease specify a warp to teleport to"));
+				player.sendMessage(Utils.color("&cPlease specify a warp to teleport to"));
 				return true;
 			}
 			
@@ -177,54 +232,71 @@ public class Main extends JavaPlugin implements Listener
 			
 			if (warp == null)
 			{
-				player.sendMessage(API.color("&cWarp deosn't exist"));
+				player.sendMessage(Utils.color("&cWarp &e" + args[0] + " &cdeos not exist"));
 			}
 			else
 			{
-				player.sendMessage(API.color("&aTeleporting to warp " + args[0]));
+				player.sendMessage(Utils.color("&aTeleporting to &e" + args[0]));
 				player.teleport(warp);
 			}
-			
-			return true;
 		}
 		else if (cmd.getName().equalsIgnoreCase("setwarp"))
 		{
 			if (args.length == 0)
 			{
-				player.sendMessage(API.color("&cPlease specify a warp to set"));
+				player.sendMessage(Utils.color("&cPlease specify a warp to set"));
 				return true;
 			}
 			
-			player.sendMessage(API.color("&cSet warp " + args[0]));
-			setWarp(args[0], player.getLocation());
-			return true;
+			if (setWarp(args[0], player.getLocation()))
+				player.sendMessage(Utils.color("&aSet warp &e" + args[0] + " &ato current location"));
+			else
+				player.sendMessage(Utils.color("&cFailed to set warp &e" + args[0] + "&c!"));
 		}
 		else if (cmd.getName().equalsIgnoreCase("warps"))
 		{
 			ConfigurationSection warps = getConfig().getConfigurationSection("warps");
 			
-			player.sendMessage(API.color("&cWarps:"));
+			player.sendMessage(Utils.color("&cWarps:"));
 				
 			for (String warpName : warps.getKeys(false))
 			{
 				if (getWarp(warpName) != null)
 				{
-					TextComponent msg = new TextComponent(API.color("&c- &a" + warpName));
+					TextComponent msg = new TextComponent(Utils.color("&c- &a" + warpName));
 					msg.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/warp " + warpName));
 					player.spigot().sendMessage(msg);
 				}
 			}
+		}
+		else if (cmd.getName().equalsIgnoreCase("home"))
+		{
+			Location home = getHome(player.getUniqueId());
 			
-			return true;
+			if (home == null)
+			{
+				player.sendMessage(Utils.color("&cHome not set"));
+			}
+			else
+			{
+				player.sendMessage(Utils.color("&aTeleporting to home"));
+				player.teleport(home);
+			}
+		}
+		else if (cmd.getName().equalsIgnoreCase("sethome"))
+		{
+			if (setHome(player.getUniqueId(), player.getLocation()))
+				player.sendMessage(Utils.color("&aSet home to current location"));
+			else
+				player.sendMessage(Utils.color("&cFailed to set home!"));
 		}
 		else if (cmd.getName().equalsIgnoreCase("back"))
 		{
-			player.sendMessage(API.color("&aTeleporting to last location!"));
+			player.sendMessage(Utils.color("&aTeleporting to last location!"));
 			player.teleport(back.get(player));
-			return true;
 		}
 		
-		return false;
+		return true;
 	}
 	
 	@EventHandler

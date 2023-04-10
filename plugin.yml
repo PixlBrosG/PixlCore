@@ -1,8 +1,8 @@
 main: com.pixlcore.main.Main
 name: PixlCore
-version: 1.0.0
+version: 1.1.0
 api-version: 1.17
-author: PixlBrosGamingYT
+author: P1xl__
 description: Core plugin
 commands:
    rename:
@@ -14,6 +14,21 @@ commands:
       description: invsee
       usage: /invsee <player>
       permission: pixlcore.invsee
+      permissionmessage: Nope.
+   mute:
+      description: Mute player
+      usage: /mute <player> [reason]
+      permission: pixlcore.mute
+      permissionmessage: Nope.
+   unmute:
+      description: Unmute player
+      usage: /unmute <player>
+      permission: pixlcore.unmute
+      permissionmessage: Nope.
+   tempmute:
+      description: Mute player temporarily
+      usage: /mute <player> <duration> [reason]
+      permission: pixlcore.tempmute
       permissionmessage: Nope.
    discord:
       description: Join our discord!
@@ -37,6 +52,12 @@ commands:
       usage: /setwarp <warp name>
       permission: pixlcore.setwarp
       permissionmessage: Nope.
+   home:
+      description: Teleport to your home
+      usage: /home
+   sethome:
+      description: Set your home location
+      usage: /sethome
    back:
       description: Teleport to last location
       usage: /back

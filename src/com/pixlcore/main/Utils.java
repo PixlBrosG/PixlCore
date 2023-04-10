@@ -2,7 +2,7 @@ package com.pixlcore.main;
 
 import org.bukkit.ChatColor;
 
-public class API {
+public class Utils {
 
 	public static String color(String arg0)
 	{
