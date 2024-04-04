@@ -1,63 +1,82 @@
-main: com.pixlcore.main.Main
+main: dev.pixlcore.core.EntryPoint
 name: PixlCore
-version: 1.1.0
-api-version: 1.17
+version: 2.0.0
+api-version: 1.20
 author: P1xl__
-description: Core plugin
+description: Core Plugin
+
 commands:
-   rename:
-      description: Rename item
-      usage: /rename <name>
-      permission: pixlcore.rename
-      permissionmessage: Nope.
-   invsee:
-      description: invsee
-      usage: /invsee <player>
-      permission: pixlcore.invsee
-      permissionmessage: Nope.
-   mute:
-      description: Mute player
-      usage: /mute <player> [reason]
-      permission: pixlcore.mute
-      permissionmessage: Nope.
-   unmute:
-      description: Unmute player
-      usage: /unmute <player>
-      permission: pixlcore.unmute
-      permissionmessage: Nope.
-   tempmute:
-      description: Mute player temporarily
-      usage: /mute <player> <duration> [reason]
-      permission: pixlcore.tempmute
-      permissionmessage: Nope.
-   discord:
-      description: Join our discord!
-      usage: /discord
-   spawn:
-      description: Teleport to spawn
-      usage: /spawn
-   setspawn:
-      description: Set new spawn
-      usage: /setspawn
-      permission: pixlcore.setspawn
-      permissionmessage: Nope.
-   warps:
-      description: List warps
-      usage: /warps
-   warp:
-      description: Teleport to a warp
-      usage: /warp <warp name>
-   setwarp:
-      description: Set new warp location
-      usage: /setwarp <warp name>
-      permission: pixlcore.setwarp
-      permissionmessage: Nope.
-   home:
-      description: Teleport to your home
-      usage: /home
-   sethome:
-      description: Set your home location
-      usage: /sethome
-   back:
-      description: Teleport to last location
-      usage: /back
+  rename:
+    description: Rename item
+    usage: /rename <name>
+    permission: pixlcore.rename
+    permissionmessage: Nope.
+  invsee:
+    description: invsee
+    usage: /invsee <player>
+    permission: pixlcore.invsee
+    permissionmessage: Nope.
+  mute:
+    description: Mute player
+    usage: /mute <player> [reason]
+    permission: pixlcore.mute
+    permissionmessage: Nope.
+  unmute:
+    description: Unmute player
+    usage: /unmute <player>
+    permission: pixlcore.unmute
+    permissionmessage: Nope.
+  tempmute:
+    description: Mute player temporarily
+    usage: /mute <player> <duration> [reason]
+    permission: pixlcore.tempmute
+    permissionmessage: Nope.
+  discord:
+    description: Join our discord!
+    usage: /discord
+  spawn:
+    description: Teleport to spawn
+    usage: /spawn
+  setspawn:
+    description: Set new spawn
+    usage: /setspawn
+    permission: pixlcore.setspawn
+    permissionmessage: Nope.
+  delspawn:
+    description: Delete spawn
+    usage: /delspawn
+    permission: pixlcore.delspawn
+    permissionmessage: Nope.
+  warps:
+    description: List warps
+    usage: /warps
+  warp:
+    description: Teleport to a warp
+    usage: /warp <warp name>
+  setwarp:
+    description: Set new warp location
+    usage: /setwarp <warp name>
+    permission: pixlcore.setwarp
+    permissionmessage: Nope.
+  delwarp:
+    description: Delete a warp
+    usage: /delwarp <warp name>
+    permission: pixlcore.delwarp
+    permissionmessage: Nope.
+  home:
+    description: Teleport to your home
+    usage: /home
+  sethome:
+    description: Set your home location
+    usage: /sethome
+  delhome:
+    description: Delete your home
+    usage: /delhome
+    permission: pixlcore.delhome
+    permissionmessage: Nope.
+  back:
+    description: Teleport to last location
+    usage: /back
+  rules:
+    description: Rules
+    usage: /rules
